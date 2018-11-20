@@ -1,4 +1,4 @@
-package com.pusher.rest.marshaller;
+package org.marvec.pusher.marshaller;
 
 /**
  * @author <a href="mailto:marvenec@gmail.com">Martin Večeřa</a>

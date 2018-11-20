@@ -1,4 +1,4 @@
-package com.pusher.rest.data;
+package org.marvec.pusher.data;
 
 public class AuthData {
 

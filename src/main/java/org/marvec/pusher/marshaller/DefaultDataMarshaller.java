@@ -1,4 +1,4 @@
-package com.pusher.rest.marshaller;
+package org.marvec.pusher.marshaller;
 
 import com.google.gson.Gson;
 

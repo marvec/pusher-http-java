@@ -1,4 +1,4 @@
-package com.pusher.rest;
+package org.marvec.pusher;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;

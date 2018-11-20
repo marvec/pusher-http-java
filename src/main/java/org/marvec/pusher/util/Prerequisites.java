@@ -1,4 +1,4 @@
-package com.pusher.rest.util;
+package org.marvec.pusher.util;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

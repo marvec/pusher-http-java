@@ -1,4 +1,4 @@
-package com.pusher.rest;
+package org.marvec.pusher;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,21 +21,20 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.marvec.pusher.data.AuthData;
+import org.marvec.pusher.data.Event;
+import org.marvec.pusher.data.EventBatch;
+import org.marvec.pusher.data.PresenceUser;
+import org.marvec.pusher.data.Result;
+import org.marvec.pusher.data.TriggerData;
+import org.marvec.pusher.data.Validity;
+import org.marvec.pusher.marshaller.DataMarshaller;
+import org.marvec.pusher.marshaller.DefaultDataMarshaller;
+import org.marvec.pusher.util.Prerequisites;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import com.pusher.rest.data.AuthData;
-import com.pusher.rest.data.Event;
-import com.pusher.rest.data.EventBatch;
-import com.pusher.rest.data.PresenceUser;
-import com.pusher.rest.data.Result;
-import com.pusher.rest.data.TriggerData;
-import com.pusher.rest.data.Validity;
-import com.pusher.rest.marshaller.DataMarshaller;
-import com.pusher.rest.marshaller.DefaultDataMarshaller;
-import com.pusher.rest.util.Prerequisites;
 
 /**
  * A library for interacting with the Pusher HTTP API.

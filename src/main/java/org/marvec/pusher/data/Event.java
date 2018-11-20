@@ -1,6 +1,6 @@
-package com.pusher.rest.data;
+package org.marvec.pusher.data;
 
-import com.pusher.rest.util.Prerequisites;
+import org.marvec.pusher.util.Prerequisites;
 
 /**
  * POJO for JSON encoding of trigger batch events.

@@ -1,4 +1,4 @@
-package com.pusher.rest;
+package org.marvec.pusher;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -7,7 +7,7 @@ import java.util.Collections;
 
 import org.junit.Test;
 
-import com.pusher.rest.data.PresenceUser;
+import org.marvec.pusher.data.PresenceUser;
 
 public class PusherChannelAuthTest {
 

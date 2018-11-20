@@ -1,4 +1,4 @@
-package com.pusher.rest;
+package org.marvec.pusher;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -17,8 +17,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.pusher.rest.data.Result;
-import com.pusher.rest.data.Result.Status;
+import org.marvec.pusher.data.Result;
+import org.marvec.pusher.data.Result.Status;
 
 /**
  * Tests which use a local server to check response handling

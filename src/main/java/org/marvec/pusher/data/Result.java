@@ -1,6 +1,6 @@
-package com.pusher.rest.data;
+package org.marvec.pusher.data;
 
-import static com.pusher.rest.data.Result.Status.*;
+import static org.marvec.pusher.data.Result.Status.*;
 
 import java.io.IOException;
 

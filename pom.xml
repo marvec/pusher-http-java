@@ -7,10 +7,10 @@
     <version>7</version>
   </parent>
 
-  <groupId>com.pusher</groupId>
-  <artifactId>pusher-http-java</artifactId>
+  <groupId>org.marvec</groupId>
+  <artifactId>pusher</artifactId>
   <name>Pusher HTTP Client</name>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.1</version>
   <url>http://github.com/pusher/pusher-http-java</url>
 
   <description>
@@ -26,15 +26,15 @@
   </properties>
 
   <scm>
-    <url>scm:git:git@github.com:pusher/pusher-http-java</url>
-    <connection>scm:git:git@github.com:pusher/pusher-http-java</connection>
-    <developerConnection>scm:git:git@github.com:pusher/pusher-http-java</developerConnection>
+    <url>scm:git:git@github.com:marvec/pusher</url>
+    <connection>scm:git:git@github.com:marvec/pusher</connection>
+    <developerConnection>scm:git:git@github.com:marvec/pusher</developerConnection>
   </scm>
 
   <licenses>
     <license>
       <name>MIT</name>
-      <url>https://raw.github.com/pusher/pusher-http-java/master/LICENCE.txt</url>
+      <url>https://raw.github.com/marvec/pusher/master/LICENCE.txt</url>
     </license>
   </licenses>
 

@@ -1,6 +1,6 @@
-package com.pusher.rest.data;
+package org.marvec.pusher.data;
 
-import com.pusher.rest.util.Prerequisites;
+import org.marvec.pusher.util.Prerequisites;
 
 /**
  * Represents a precence channel "user", that is a user from the domain of your application.

@@ -1,6 +1,4 @@
-package com.pusher.rest;
-
-import static com.pusher.rest.util.Matchers.*;
+package org.marvec.pusher;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,13 +16,14 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
+import org.marvec.pusher.util.Matchers;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import com.pusher.rest.data.Event;
-import com.pusher.rest.marshaller.DataMarshaller;
+import org.marvec.pusher.data.Event;
+import org.marvec.pusher.marshaller.DataMarshaller;
 
 /**
  * Tests which mock the HttpClient to check outgoing requests
@@ -76,7 +75,7 @@ public class PusherTest {
     @Test
     public void serialisePojo() throws IOException {
         context.checking(new Expectations() {{
-            oneOf(httpClient).execute(with(field("data", "{\"aString\":\"value\",\"aNumber\":42}")));
+            oneOf(httpClient).execute(with(Matchers.field("data", "{\"aString\":\"value\",\"aNumber\":42}")));
         }});
 
         p.trigger("my-channel", "event", new MyPojo());
@@ -92,7 +91,7 @@ public class PusherTest {
         });
 
         context.checking(new Expectations() {{
-            oneOf(httpClient).execute(with(field("data", "{\"a-string\":\"value\",\"a-number\":42}")));
+            oneOf(httpClient).execute(with(Matchers.field("data", "{\"a-string\":\"value\",\"a-number\":42}")));
         }});
 
         p.trigger("my-channel", "event", new MyPojo());
@@ -108,7 +107,7 @@ public class PusherTest {
         };
 
         context.checking(new Expectations() {{
-            oneOf(httpClient).execute(with(field("data", "this is my strong data")));
+            oneOf(httpClient).execute(with(Matchers.field("data", "this is my strong data")));
         }});
 
         p.trigger("my-channel", "event", "this is my string data");
@@ -133,7 +132,7 @@ public class PusherTest {
 
         context.checking(new Expectations() {{
             oneOf(httpClient).execute(
-                with(field("batch", res))
+                with(Matchers.field("batch", res))
             );
         }});
 
@@ -147,7 +146,7 @@ public class PusherTest {
     @Test
     public void mapShouldBeASuitableObjectForData() throws IOException {
         context.checking(new Expectations() {{
-            oneOf(httpClient).execute(with(field("data", "{\"name\":\"value\"}")));
+            oneOf(httpClient).execute(with(Matchers.field("data", "{\"name\":\"value\"}")));
         }});
 
         p.trigger("my-channel", "event", Collections.singletonMap("name", "value"));
@@ -167,7 +166,7 @@ public class PusherTest {
 
         final String expectedData = "{\"k1\":\"v1\",\"k2\":{\"k3\":\"v3\",\"k4\":[\"v4\",\"v5\"]}}";
         context.checking(new Expectations() {{
-            oneOf(httpClient).execute(with(field("data", expectedData)));
+            oneOf(httpClient).execute(with(Matchers.field("data", expectedData)));
         }});
 
         p.trigger("my-channel", "event", data);
@@ -178,7 +177,7 @@ public class PusherTest {
         final List<String> channels = Arrays.asList(new String[] { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten" });
 
         context.checking(new Expectations() {{
-            oneOf(httpClient).execute(with(field("channels", channels)));
+            oneOf(httpClient).execute(with(Matchers.field("channels", channels)));
         }});
 
         p.trigger(channels, "event", Collections.singletonMap("name", "value"));
@@ -195,7 +194,7 @@ public class PusherTest {
     public void socketIdExclusion() throws Exception {
         final String socketId = "12345.6789";
         context.checking(new Expectations() {{
-            oneOf(httpClient).execute(with(field("socket_id", socketId)));
+            oneOf(httpClient).execute(with(Matchers.field("socket_id", socketId)));
         }});
 
         p.trigger("channel", "event", Collections.singletonMap("name", "value"), socketId);
@@ -204,7 +203,7 @@ public class PusherTest {
     @Test
     public void genericGet() throws Exception {
         context.checking(new Expectations() {{
-            oneOf(httpClient).execute(with(path("/apps/" + APP_ID + "/channels")));
+            oneOf(httpClient).execute(with(Matchers.path("/apps/" + APP_ID + "/channels")));
         }});
 
         p.get("/channels");

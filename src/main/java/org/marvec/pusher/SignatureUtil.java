@@ -1,4 +1,4 @@
-package com.pusher.rest;
+package org.marvec.pusher;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -16,8 +16,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.http.client.utils.URIBuilder;
-
-import com.pusher.rest.util.Prerequisites;
+import org.marvec.pusher.util.Prerequisites;
 
 public class SignatureUtil {
 
