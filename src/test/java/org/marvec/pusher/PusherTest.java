@@ -16,6 +16,7 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
+import org.marvec.pusher.data.BackupDataEvent;
 import org.marvec.pusher.util.Matchers;
 
 import com.google.gson.FieldNamingPolicy;
@@ -115,19 +116,27 @@ public class PusherTest {
 
     @Test
     public void batchEvents() throws IOException {
-        final List<Map<String, Object>> res = new ArrayList<Map<String, Object>>() {{
-          add(new HashMap<String, Object>() {{
-            put("channel", "my-channel");
-            put("name", "event-name");
-            put("data", "{\"aString\":\"value1\",\"aNumber\":42}");
-          }});
+        String longMessage = String.join("", Collections.nCopies(10_2400, "a"));
 
-          add(new HashMap<String, Object>() {{
-            put("channel", "my-channel");
-            put("name", "event-name");
-            put("data", "{\"aString\":\"value2\",\"aNumber\":43}");
-            put("socket_id", "22.33");
-          }});
+        final List<Map<String, Object>> res = new ArrayList<Map<String, Object>>() {{
+            add(new HashMap<String, Object>() {{
+                put("channel", "my-channel");
+                put("name", "event-name");
+                put("data", "{\"aString\":\"value1\",\"aNumber\":42}");
+            }});
+
+            add(new HashMap<String, Object>() {{
+                put("channel", "my-channel");
+                put("name", "event-name");
+                put("data", "{\"aString\":\"value2\",\"aNumber\":43}");
+                put("socket_id", "22.33");
+            }});
+
+            add(new HashMap<String, Object>() {{
+                put("channel", "my-channel");
+                put("name", "event-name:ALT");
+                put("data", "{\"aString\":\"value3\",\"aNumber\":44}");
+            }});
         }};
 
         context.checking(new Expectations() {{
@@ -139,6 +148,7 @@ public class PusherTest {
         List<Event> batch = new ArrayList<Event>();
         batch.add(new Event("my-channel", "event-name", new MyPojo("value1", 42)));
         batch.add(new Event("my-channel", "event-name", new MyPojo("value2", 43), "22.33"));
+        batch.add(new BackupDataEvent("my-channel", "event-name", longMessage, new MyPojo("value3", 44), null));
 
         p.trigger(batch);
     }

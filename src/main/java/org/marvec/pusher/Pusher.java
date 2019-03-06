@@ -3,12 +3,15 @@ package org.marvec.pusher;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
@@ -22,6 +25,7 @@ import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.marvec.pusher.data.AuthData;
+import org.marvec.pusher.data.BackupDataEvent;
 import org.marvec.pusher.data.Event;
 import org.marvec.pusher.data.EventBatch;
 import org.marvec.pusher.data.PresenceUser;
@@ -78,6 +82,8 @@ public class Pusher {
     private String host = "api.pusherapp.com";
     private String scheme = "http";
     private int requestTimeout = 4000; // milliseconds
+
+    private String alternateEventSuffix = ":ALT";
 
     private CloseableHttpClient client;
     private DataMarshaller dataMarshaller;
@@ -171,6 +177,16 @@ public class Pusher {
      */
     public void setEncrypted(final boolean encrypted) {
         this.scheme = encrypted ? "https" : "http";
+    }
+
+    /**
+     * When the default data exceeds Pusher service size limits and the alternate data are used,
+     * append this suffix to the event name.
+     *
+     * @param alternateEventSuffix The suffix used to denote events where alternative data has been used.
+     */
+    public void setAlternateEventSuffix(final String alternateEventSuffix) {
+        this.alternateEventSuffix = alternateEventSuffix;
     }
 
     /**
@@ -356,23 +372,56 @@ public class Pusher {
      * @param batch a list of events to publish
      * @return a {@link Result} object encapsulating the success state and response to the request
      */
-    public Result trigger(final List<Event> batch) {
+    public Collection<Result> trigger(final List<? extends Event> batch) {
+        final List<Result> results = new ArrayList<>();
         final List<Event> eventsWithSerialisedBodies = new ArrayList<Event>(batch.size());
         for (final Event e : batch) {
-            eventsWithSerialisedBodies.add(
-                new Event(
-                    e.getChannel(),
-                    e.getName(),
-                    serialise(e.getData()),
-                    e.getSocketId()
-                )
-            );
+            eventsWithSerialisedBodies.add(getSerializedEvent(e));
         }
-        final String body = BODY_SERIALISER.toJson(new EventBatch(eventsWithSerialisedBodies));
 
-        return post("/batch_events", body);
+        final Collection<List<Event>> batches = partition(eventsWithSerialisedBodies, 10);
+        batches.forEach(oneBatch -> {
+            final String body = BODY_SERIALISER.toJson(new EventBatch(oneBatch));
+            results.add(post("/batch_events", body));
+        });
+
+        return results;
     }
 
+    /**
+     * Serialize the data in the event and use alternate data when available.
+     *
+     * @param e The event to be serialized.
+     * @param <T> Anything that extends the basic Event (i.e. Event or BackupDataEvent).
+     * @return An event with serialized body using alternate data when available.
+     */
+    private <T extends Event> Event getSerializedEvent(final T e) {
+        String eventName = e.getName();
+        String serializedData = serialise(e.getData());
+
+        if (e instanceof BackupDataEvent) {
+            final BackupDataEvent b = (BackupDataEvent) e;
+            if (serializedData.length() > 9_000 && b.getBackupData() != null) { // the limit is 10kB, we keep some space for surrounding data
+                serializedData = serialise(b.getBackupData());
+                eventName += this.alternateEventSuffix;
+            }
+        }
+
+        return new Event(
+              e.getChannel(),
+              eventName,
+              serializedData,
+              e.getSocketId()
+        );
+    }
+
+    private static  <T> Collection<List<T>> partition(List<T> list, int size) {
+        final AtomicInteger counter = new AtomicInteger(0);
+
+        return list.stream()
+                   .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / size))
+                   .values();
+    }
     /**
      * Make a generic HTTP call to the Pusher API.
      * <p>
